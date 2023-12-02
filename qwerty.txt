@@ -1,0 +1,1082 @@
+1.	LEX PROGRAM FOR NO.OF CHARS,LINES	
+%{ 
+int i =0,l=0,c=0;
+%} 
+%% 
+[\n] {l++;}
+[ ] {i++;}
+[a-zA-Z0-9] {c++;}
+%% 
+int yywrap(){} 
+int main() 
+{ 
+ printf("enter the string: ");
+ yylex(); 
+ printf("no of lines:%d\n",l);
+ printf("no of words is:%d",i+l);
+ printf("no of characters:%d",c);
+}	
+
+
+lex constants
+
+%{
+int cons = 0;
+%}
+digit [0-9]
+%%
+{digit}+"."{digit}+ { cons++; printf("%s is a floating-point constant\n", yytext); }
+{digit}+ { cons++; printf("%s is an integer constant\n", yytext); }
+.|\n { }
+%%
+int yywrap() {
+}
+int main() {
+    printf("Enter the code:");
+    yylex();
+    printf("Number of Constants: %d\n", cons);
+    return 0;
+}	
+
+
+
+macro and header
+
+%{
+int nmacro, nheader; 
+%}
+%%
+"#define" {nmacro++;} 
+"#include" {nheader++;} 
+.|\n { }
+%%
+int yywrap() 
+{ 
+return 1; 
+} 
+int main() 
+{ 
+printf("enter the string:\n");
+yylex(); 
+printf("Number of macros defined = %d \n Number of header files included = %d\n",nmacro,nheader); 
+}
+
+
+html
+
+%{
+#include <stdio.h>
+%}
+%%
+\<[^>]*\> fprintf(yyout,"%s\n",yytext);
+.|\n;
+%%
+int yywrap()
+{
+return 1;
+}
+int main()
+{
+yyin=fopen("sample1.html","r");
+yyout=fopen("output.txt","w");
+yylex();
+return 0;
+}
+
+
+5.add line number
+
+
+%{
+int ln=0;
+%}
+%%
+.* {ln++; fprintf(yyout,"\n%d:%s",ln,yytext);}
+%%
+int yywrap(){}
+int main()
+{
+yyin=fopen("simple.txt","r");
+yyout=fopen("out.txt","w");
+yylex();
+}
+
+
+count comment lines
+
+%{
+#include<stdio.h>
+int n=0;
+%}
+%%
+"/"[a-zA-Z0-9 \n\t]+"/" {n++;}
+"//"[a-zA-Z0-9 \n\t]+"//" {n++;}
+%%
+int yywrap()
+{}
+int main()
+{
+printf("enter:");
+yylex();
+printf("no of comment lines:%d",n);
+}
+
+
+capital words
+
+%{
+%}
+%%
+[A-Z]+ {printf("%s\n", yytext);}
+.|\n {}
+
+%%
+int yywrap(){}
+int main()
+{
+  printf("Enter a letter");
+  yylex();
+}
+
+email valid or not
+
+%{
+%}
+%%
+[a-z.0-9]+@[a-z]+(.com|.in) {printf("\n valid\n");}
+.+ {printf("\n Invalid\n");}
+
+%%
+int yywrap()
+{}
+int main()
+{
+printf("\nEnter : ");
+yylex();
+}
+
+LEX PROGRAM FOR CAPITAL WORDS or SUBSTRING abc to ABC 
+
+%{
+#include <ctype.h>
+%}
+%%
+[a-z] { printf("%c", toupper(yytext[0])); }
+.|\n { printf("%s", yytext); }
+%%
+int yywrap()
+{
+}
+int main() {
+    yylex();
+    return 0;
+}
+
+
+10.LEX PROGRAM FOR MOBILE NUMBER VALID OR NOT
+
+%{
+%}
+%%
+
+[0-9][0-9]{9} {printf("\n mobile number valid\n");}
+.+ {printf("\n mobile number invalid\n");}
+%%
+int yywap()
+{}
+int main()
+{
+printf("\n enter the mobile number:");
+yylex();
+}	
+
+11.LEX PROGRAM separate the tokens in the given C program and display with appropriate caption
+
+%{
+#include<stdio.h>
+%}
+%%
+bool|int|float|main|printf|int|char|float|double|void|if|while|for|do|main|return|else|elseif {printf("\n%s is a Keyword",yytext);}
+[-,+]?[0-9]+ {printf("\n%s is a numbers",yytext);}
+[,.;]+ {printf("\n%s is a Punctuation Chars",yytext);}
+[a-zA-Z_][a-zA-Z0-9_]* { printf("Identifier: %s\n", yytext); }
+["a-zA-Z"]+ {printf("\n%s is a string",yytext);}
+[!%^&-+*()]+ {printf("\n%s is a mathematical operator",yytext);}
+
+%%
+int yywrap()
+{
+}
+int main()
+{
+yylex();
+}	
+
+12. & 13. LEX PROGRAM FOR COUNT  VOWELS AND CONSONANTS
+
+%{
+int vcount=0;
+int ccount=0;
+%}
+%%
+[aeiouAEIOU] {vcount++;}
+[a-z,A-Z] {ccount++;}
+%%
+int yywrap(){}
+int main()
+{
+printf("enter the string with vowels and consonants:");
+yylex();
+printf("\n no of vowels ::%d \n",vcount);
+printf("\n no of consonants ::%d \n",ccount);
+}
+
+
+20.LEX PROGRAM FOR BASIC MATHEMATICAL OPERATIONS
+		
+%{
+#include<stdio.h>
+float op1=6,op2=7;
+%}
+
+%%
+"+" {printf("sum =%lf",op1+op2);}
+"-" {printf("diff=%lf",op1-op2);}
+"*" {printf("mul=%lf",op1*op2);}
+"/" {printf("div=%lf",op1/op2);}
+. {printf("enter proper operator.");}
+%%
+
+int yywrap(){}
+int main()
+{
+printf("enter number 1");
+printf("enter number 2");
+printf("Enter the Operator::");
+yylex();
+}	
+
+
+17.LEX PROGRAM FOR URL VALID OR NOt
+
+%{
+%}
+%%
+[http://]+[www.]+[a-z]+".com" {printf("\n valid url\n");}
+.+ {printf("\n invalid url\n");}
+ %%
+int yywrap()
+{}
+
+int main()
+{
+printf("\n enter the url:");
+yylex();
+}
+
+	
+
+18.LEX PROGRAM FOR DOB VALID OR NOT
+
+%{
+%}
+%% 
+[0-9][0-9]\/[0-1][0-9]\/[1-2][0-9]{3} { printf("valid");}
+.+ { printf("invalid");}
+%%
+
+int yywrap(){}
+
+int main()
+{
+yylex();
+}	
+
+
+19.LEX PROGRAM FOR DIGIT OR NOT
+
+%{
+#include<stdio.h>
+%}
+%%
+[0-9]+|[0-9]*\.[0-9]+ { printf("\n%s is DIGIT", yytext);}
+.+ { printf("\n%s is NOT A DIGIT",yytext);}
+%%
+int yywrap(){}
+int main()
+{
+yylex();
+}
+
+
+kkeywords and idntifiers
+
+%{
+#include<stdio.h>
+%}
+%%
+if|else|while|int|switch|for|char { printf("\n%s is a KEYWORD", yytext);}
+[a-zA-Z0-9]+ { printf("\n%s is IDENTIFIER", yytext);}
+%%
+int yywrap( ){}
+int main()
+{
+	yylex();
+}
+
+
+number and identifiers list
+
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+char alphabetList[1000] = "";
+char numberList[1000] = "";  
+%}
+
+%%
+[0-9]+  { strcat(numberList, yytext); }
+[a-zA-Z]+ { strcat(alphabetList, yytext); }
+. { printf("Invalid input: %s\n", yytext); }
+
+%%
+
+int yywrap() {
+    printf("Alphabets: %s\n", alphabetList);
+    printf("Numbers: %s\n", numberList);
+    return 1;
+}
+
+int main() {
+    char input[100];
+    printf("Enter the input: ");
+    fgets(input, sizeof(input), stdin);
+    yy_scan_string(input);
+    yylex();
+    return 0;
+}
+
+
+
+count positive negative
+
+%{
+int positive_no=0,negative_no=0;
+%}
+%%
+[-][0-9]+ {negative_no++;
+              printf("negative number=%s\n",yytext);}
+[0-9]+ {positive_no++; 
+               printf("positive number=%s\n",yytext);}
+%%
+int yywrap(){}
+int main()
+{
+yylex();
+printf("number of posive integers=%d,"
+               "number of negativenumbers=%d\n",
+                        positive_no,negative_no);
+return 0;
+}
+
+
+
+
+
+
+c programming
+
+1.	The lexical analyzer should ignore redundant spaces, tabs and new lines. It should also ignore comments. Although the syntax specification states that identifiers can be arbitrarily long, you may restrict the length to some reasonable value. Develop a lexical Analyzer to identify identifiers, constants, operators using C program.
+
+2.	Extend the lexical Analyzer to Check comments, dened as follows in C:  
+ a) A comment begins with // and includes all characters until the end of that line.
+ b) A comment begins with /* and includes all characters through the next occurrence of the character sequence */Develop a lexical Analyzer to identify whether a given line is a comment or not.
+
+3.	Design a lexical Analyzer to validate operators to recognize the operators +,-,*,/ using regular Arithmetic operators . 
+
+4.	Design a lexical Analyzer to find the number of whitespaces and newline characters.
+
+5.	Develop a lexical Analyzer to test whether a given identifier is valid or not.
+
+6.	Implement a C program to eliminate left recursion.
+
+7.	Implement a C program to eliminate left factoring.
+
+8.	Implement a C program to perform symbol table operations.
+
+9.	All languages have Grammar. When people frame a sentence we usually say whether the sentence is framed as per the rules of the Grammar or Not. Similarly use  the same ideology , implement  to check whether the given input string  is satisfying the grammar or not .
+
+10.	Write a C program to construct recursive descent parsing.
+
+11.	In a class of Grade 3, Mathematics Teacher asked for the Acronym PEMDAS?. All of them are thinking for a while. A smart kid of the class Kishore of the class says it is Parentheses, Exponentiation, Multiplication, Division, Addition, Subtraction. Can you write a C Program to help the students to understand about the operator precedence parsing for an expression containing more than one operator, the order of evaluation depends on the order of operations.
+12.	The main function of the Intermediate code generation is producing three address code statements for a given input expression. The three address codes help in determining the sequence in which operations are actioned by the compiler. The key work of Intermediate code generators is to simplify the process of Code Generator. Write a C Program to Generate the Three address code representation for the given input statement.
+13.	Write a C program for implementing a Lexical Analyzer to Count the number of characters, words, and lines .
+14.	Write a C Program for code optimization to eliminate common subexpression.
+15.	Write a C program to implement the back end of the compiler.
+
+
+
+6
+
+#include <stdio.h>
+#include <string.h>
+
+void eliminateLeftFactoring(char *production) {
+    char commonPrefix[50];
+    int i, j, k;
+
+    // Find the common prefix
+    for (i = 0; production[i] != '|' && production[i] != '\0'; i++) {
+        commonPrefix[i] = production[i];
+    }
+    commonPrefix[i] = '\0';
+
+    // If there is a common prefix, eliminate left factoring
+    if (i > 0) {
+        printf("Common Prefix: %s\n", commonPrefix);
+
+        // Print the new productions
+        printf("New Productions:\n");
+
+        // Print the common prefix once
+        printf("%s'->%s\n", commonPrefix, production + i);
+
+        // Iterate through the original productions and print modified ones
+        for (j = 0; production[j] != '\0'; j++) {
+            if (production[j] == '|') {
+                j++;
+                printf("%s->%s%s'\n", commonPrefix, commonPrefix, production + j);
+            }
+        }
+    } else {
+        // If there is no common prefix, print the original production
+        printf("No left factoring found. Original production: %s\n", production);
+    }
+}
+
+int main() {
+    char production[100];
+
+    // Get the production from the user
+    printf("Enter the production: ");
+    fgets(production, sizeof(production), stdin);
+
+    // Remove newline character from input
+    production[strcspn(production, "\n")] = '\0';
+
+    // Eliminate left factoring
+    eliminateLeftFactoring(production);
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+7
+
+
+#include <stdio.h>
+#include <string.h>
+
+void eliminateLeftRecursion(char *nonterminal, char *productions[], int numProductions) {
+    printf("Original Productions:\n");
+
+    // Print the original productions
+    for (int i = 0; i < numProductions; i++) {
+        printf("%s->%s\n", nonterminal, productions[i]);
+    }
+
+    // Check for left recursion
+    if (productions[0][0] == nonterminal[0]) {
+        // Left recursion found, eliminate it
+
+        // Create new nonterminal for recursion
+        char newNonterminal[3];
+        sprintf(newNonterminal, "%c'", nonterminal[0]);
+
+        printf("\nLeft Recursion Found. Eliminating Left Recursion:\n");
+
+        // Print the new productions without left recursion
+        printf("%s->", nonterminal);
+        for (int i = 1; productions[0][i] != '\0'; i++) {
+            printf("%c", productions[0][i]);
+        }
+        printf("%s\n", newNonterminal);
+
+        printf("%s'->", newNonterminal);
+
+        // Print the remaining productions without left recursion
+        for (int i = 1; i < numProductions; i++) {
+            printf("%s%s'\n", productions[i], newNonterminal);
+        }
+        printf("e\n");
+    } else {
+        // No left recursion found
+        printf("\nNo left recursion found. Original productions remain unchanged.\n");
+    }
+}
+
+int main() {
+    char nonterminal[2];
+    char productions[10][50];
+    int numProductions;
+
+    // Get the nonterminal symbol from the user
+    printf("Enter the nonterminal symbol: ");
+    scanf("%s", nonterminal);
+
+    // Get the number of productions from the user
+    printf("Enter the number of productions: ");
+    scanf("%d", &numProductions);
+
+    // Get the productions from the user
+    printf("Enter the productions:\n");
+    for (int i = 0; i < numProductions; i++) {
+        scanf("%s", productions[i]);
+    }
+
+    // Eliminate left recursion
+    eliminateLeftRecursion(nonterminal, productions, numProductions);
+
+    return 0;
+}
+
+
+
+8
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Define the maximum size of the symbol table
+#define MAX_SIZE 100
+
+// Structure for a symbol entry
+struct SymbolEntry {
+    char name[30];
+    int value;
+    // You can include additional fields as needed
+};
+
+// Structure for the symbol table
+struct SymbolTable {
+    struct SymbolEntry entries[MAX_SIZE];
+};
+
+// Function to initialize the symbol table
+void initializeSymbolTable(struct SymbolTable *table) {
+    for (int i = 0; i < MAX_SIZE; i++) {
+        table->entries[i].name[0] = '\0';
+    }
+}
+
+// Function to calculate the hash value for a given symbol
+int hashFunction(char *symbol) {
+    int hash = 0;
+    for (int i = 0; symbol[i] != '\0'; i++) {
+        hash = (hash * 31 + symbol[i]) % MAX_SIZE;
+    }
+    return hash;
+}
+
+// Function to insert a symbol into the symbol table
+void insertSymbol(struct SymbolTable *table, char *name, int value) {
+    int hash = hashFunction(name);
+
+    // Linear probing to handle collisions
+    while (table->entries[hash].name[0] != '\0') {
+        hash = (hash + 1) % MAX_SIZE;
+    }
+
+    // Insert the symbol entry
+    strcpy(table->entries[hash].name, name);
+    table->entries[hash].value = value;
+
+    printf("Symbol '%s' inserted with value %d\n", name, value);
+}
+
+// Function to search for a symbol in the symbol table
+int searchSymbol(struct SymbolTable *table, char *name) {
+    int hash = hashFunction(name);
+
+    // Linear probing to handle collisions
+    while (table->entries[hash].name[0] != '\0') {
+        if (strcmp(table->entries[hash].name, name) == 0) {
+            return table->entries[hash].value;
+        }
+        hash = (hash + 1) % MAX_SIZE;
+    }
+
+    // Symbol not found
+    return -1;
+}
+
+// Function to delete a symbol from the symbol table
+void deleteSymbol(struct SymbolTable *table, char *name) {
+    int hash = hashFunction(name);
+
+    // Linear probing to handle collisions
+    while (table->entries[hash].name[0] != '\0') {
+        if (strcmp(table->entries[hash].name, name) == 0) {
+            table->entries[hash].name[0] = '\0';
+            printf("Symbol '%s' deleted\n", name);
+            return;
+        }
+        hash = (hash + 1) % MAX_SIZE;
+    }
+
+    // Symbol not found
+    printf("Symbol '%s' not found\n", name);
+}
+
+int main() {
+    struct SymbolTable symbolTable;
+    initializeSymbolTable(&symbolTable);
+
+    // Insert symbols
+    insertSymbol(&symbolTable, "variable1", 10);
+    insertSymbol(&symbolTable, "variable2", 20);
+
+    // Search for symbols
+    int value1 = searchSymbol(&symbolTable, "variable1");
+    int value2 = searchSymbol(&symbolTable, "variable2");
+    int value3 = searchSymbol(&symbolTable, "variable3");
+
+    printf("Value of variable1: %d\n", value1);
+    printf("Value of variable2: %d\n", value2);
+    printf("Value of variable3: %d\n", value3);
+
+    // Delete a symbol
+    deleteSymbol(&symbolTable, "variable1");
+
+    // Search for the deleted symbol
+    int newValue1 = searchSymbol(&symbolTable, "variable1");
+    printf("Value of variable1 after deletion: %d\n", newValue1);
+
+    return 0;
+}
+
+
+	
+
+
+13,14,15
+
+
+#include <stdio.h>
+#include <ctype.h>
+
+int main() {
+    FILE *file;
+    char ch;
+    int charCount = 0, wordCount = 0, lineCount = 0, inWord = 0;
+
+    file = fopen("input.txt", "r");  // Replace "input.txt" with your input file
+
+    if (file == NULL) {
+        perror("Error opening file");
+        return 1;
+    }
+
+    while ((ch = fgetc(file)) != EOF) {
+        charCount++;
+
+        if (isspace(ch)) {
+            if (inWord) {
+                inWord = 0;
+                wordCount++;
+            }
+
+            if (ch == '\n') {
+                lineCount++;
+            }
+        } else {
+            inWord = 1;
+        }
+    }
+
+    // Check for the last word in the file
+    if (inWord) {
+        wordCount++;
+    }
+
+    fclose(file);
+
+    printf("Characters: %d\n", charCount);
+    printf("Words: %d\n", wordCount);
+    printf("Lines: %d\n", lineCount);
+
+    return 0;
+}
+
+
+#include <stdio.h>
+
+int main() {
+    int a = 5, b = 10, c, d, result;
+
+    // Common subexpression elimination
+    c = a + b;
+    d = a + b;
+
+    result = c * d;
+
+    printf("Result: %d\n", result);
+
+    return 0;
+}
+
+
+
+#include <stdio.h>
+
+int main() {
+    // Intermediate Code Generation
+    printf("LOAD A, 5\n");
+    printf("LOAD B, 10\n");
+    printf("ADD C, A, B\n");
+    printf("MUL D, C, C\n");
+
+    // Code Optimization (Common Subexpression Elimination)
+    printf("MUL E, C, C\n");
+
+    // Target Code Generation (Assembly-like)
+    printf("MOV result, E\n");
+
+    return 0;
+}
+
+
+
+1
+
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+// Token types
+enum TokenType {
+    IDENTIFIER,
+    CONSTANT,
+    OPERATOR,
+    SPECIAL_CHARACTER,
+    UNKNOWN
+};
+
+// Function to check if a character is an operator
+int isOperator(char ch) {
+    char operators[] = {'+', '-', '*', '/', '=', '<', '>', '&', '|', '!'};
+    for (int i = 0; i < sizeof(operators) / sizeof(operators[0]); i++) {
+        if (ch == operators[i]) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// Function to check if a character is a special character
+int isSpecialCharacter(char ch) {
+    char specialCharacters[] = {'(', ')', '{', '}', '[', ']', ',', ';'};
+    for (int i = 0; i < sizeof(specialCharacters) / sizeof(specialCharacters[0]); i++) {
+        if (ch == specialCharacters[i]) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+// Function to analyze a token and print its type
+void analyzeToken(char *token) {
+    if (isalpha(token[0]) || token[0] == '_') {
+        printf("Identifier: %s\n", token);
+    } else if (isdigit(token[0])) {
+        printf("Constant: %s\n", token);
+    } else if (isOperator(token[0])) {
+        printf("Operator: %s\n", token);
+    } else if (isSpecialCharacter(token[0])) {
+        printf("Special Character: %s\n", token);
+    } else {
+        printf("Unknown: %s\n", token);
+    }
+}
+
+int main() {
+    char input[1000];
+    char token[100];
+    int tokenIndex = 0;
+
+    printf("Enter the C code:\n");
+
+    // Read input from the user
+    fgets(input, sizeof(input), stdin);
+
+    printf("Tokens:\n");
+
+    // Analyze each character in the input
+    for (int i = 0; input[i] != '\0'; i++) {
+        if (isalnum(input[i]) || input[i] == '_') {
+            // If the character is alphanumeric or underscore, add it to the token
+            token[tokenIndex++] = input[i];
+        } else if (isspace(input[i]) || isSpecialCharacter(input[i]) || isOperator(input[i])) {
+            // If the character is a space, special character, or operator, analyze the token
+            if (tokenIndex > 0) {
+                token[tokenIndex] = '\0'; // Null-terminate the token
+                analyzeToken(token);
+                tokenIndex = 0; // Reset the token index
+            }
+
+            // If the character is a special character or operator, analyze it separately
+            if (isSpecialCharacter(input[i]) || isOperator(input[i])) {
+                char specialToken[2] = {input[i], '\0'};
+                analyzeToken(specialToken);
+            }
+        }
+        // Ignore other characters (e.g., comments, quotes, etc.) for simplicity
+    }
+
+    return 0;
+}
+
+
+3,4,5
+
+#include <stdio.h>
+#include <ctype.h>
+
+// Function to validate arithmetic operators
+int isValidOperator(char op) {
+    return (op == '+' || op == '-' || op == '*' || op == '/');
+}
+
+int main() {
+    char input[100];
+    printf("Enter an arithmetic operator: ");
+    fgets(input, sizeof(input), stdin);
+
+    if (isValidOperator(input[0])) {
+        printf("Valid arithmetic operator: %c\n", input[0]);
+    } else {
+        printf("Invalid arithmetic operator: %c\n", input[0]);
+    }
+
+    return 0;
+}
+
+
+
+#include <stdio.h>
+
+int main() {
+    char input[1000];
+    int whitespaceCount = 0, newlineCount = 0;
+
+    printf("Enter a string (Ctrl+D to end input on Unix/Linux, Ctrl+Z on Windows):\n");
+
+    while (fgets(input, sizeof(input), stdin) != NULL) {
+        for (int i = 0; input[i] != '\0'; i++) {
+            if (input[i] == ' ' || input[i] == '\t') {
+                whitespaceCount++;
+            } else if (input[i] == '\n') {
+                newlineCount++;
+            }
+        }
+    }
+
+    printf("Number of whitespaces: %d\n", whitespaceCount);
+    printf("Number of newline characters: %d\n", newlineCount);
+
+    return 0;
+}
+
+
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+// Function to check if a character is a valid identifier character
+int isValidIdentifierChar(char ch) {
+    return isalnum(ch) || ch == '_';
+}
+
+// Function to validate an identifier
+int isValidIdentifier(char *identifier) {
+    // Check if the first character is a letter or underscore
+    if (!isalpha(identifier[0]) && identifier[0] != '_') {
+        return 0;
+    }
+
+    // Check the remaining characters
+    for (int i = 1; identifier[i] != '\0'; i++) {
+        if (!isValidIdentifierChar(identifier[i])) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+
+
+
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+// Function to check if a character is a valid identifier character
+int isValidIdentifierChar(char ch) {
+    return isalnum(ch) || ch == '_';
+}
+
+// Function to validate an identifier
+int isValidIdentifier(char *identifier) {
+    // Check if the first character is a letter or underscore
+    if (!isalpha(identifier[0]) && identifier[0] != '_') {
+        return 0;
+    }
+
+    // Check the remaining characters
+    for (int i = 1; identifier[i] != '\0'; i++) {
+        if (!isValidIdentifierChar(identifier[i])) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+int main() {
+    char input[100];
+    printf("Enter an identifier: ");
+    fgets(input, sizeof(input), stdin);
+
+    // Remove the newline character if present
+    if (input[strlen(input) - 1] == '\n') {
+        input[strlen(input) - 1] = '\0';
+    }
+
+    if (isValidIdentifier(input)) {
+        printf("Valid identifier: %s\n", input);
+    } else {
+        printf("Invalid identifier: %s\n", input);
+    }
+
+    return 0;
+}
+
+
+10
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+// Global variables
+char *input;
+int index = 0;
+
+// Function prototypes
+int parseExpression();
+int parseTerm();
+int parseFactor();
+
+// Function to display an error message
+void error(char *msg) {
+    printf("Error: %s\n", msg);
+    exit(EXIT_FAILURE);
+}
+
+// Function to consume a character if it matches the expected character
+void consume(char expected) {
+    if (input[index] == expected) {
+        index++;
+    } else {
+        error("Unexpected character");
+    }
+}
+
+// Function to parse an integer
+int parseInteger() {
+    int result = 0;
+    while (isdigit(input[index])) {
+        result = result * 10 + (input[index] - '0');
+        index++;
+    }
+    return result;
+}
+
+// Recursive Descent Parsing functions
+int parseExpression() {
+    int result = parseTerm();
+    while (input[index] == '+' || input[index] == '-') {
+        char op = input[index];
+        index++;
+        int term = parseTerm();
+        if (op == '+') {
+            result += term;
+        } else {
+            result -= term;
+        }
+    }
+    return result;
+}
+
+int parseTerm() {
+    int result = parseFactor();
+    while (input[index] == '*' || input[index] == '/') {
+        char op = input[index];
+        index++;
+        int factor = parseFactor();
+        if (op == '*') {
+            result *= factor;
+        } else {
+            if (factor != 0) {
+                result /= factor;
+            } else {
+                error("Division by zero");
+            }
+        }
+    }
+    return result;
+}
+
+int parseFactor() {
+    if (isdigit(input[index])) {
+        return parseInteger();
+    } else if (input[index] == '(') {
+        consume('(');
+        int result = parseExpression();
+        consume(')');
+        return result;
+    } else {
+        error("Unexpected character");
+        return 0; // To satisfy the compiler, as error() function will exit
+    }
+}
+
+int main() {
+    input = "(3+5)*2-(4/2)";
+    printf("Input Expression: %s\n", input);
+    
+    int result = parseExpression();
+
+    printf("Result: %d\n", result);
+
+    return 0;
+}
+
+
+
+
+
+
+
+
